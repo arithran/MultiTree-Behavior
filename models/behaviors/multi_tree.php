@@ -7,10 +7,10 @@
  * 
  * NOTE: Use InnoDB (or a different engine that supports transactions, otherwise you have to LOCK tables manually during operations to prevent corrupted data in multi user environments)
  * 
+ * @author Arithran Thurairetnam
  * @author Thomas Heymann
- * @link http://bakery.cakephp.org/articles/view/multitree-behavior
- * @link http://book.cakephp.org/view/228/Basic-Usage
- * @version	0.3
+ * @link https://github.com/arithran/MultiTree-Behavior
+ * @version	0.4
  * @license	http://www.opensource.org/licenses/mit-license.php The MIT License
  * @package app
  * @subpackage app.models.behaviors
