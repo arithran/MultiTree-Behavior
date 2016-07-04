@@ -1040,7 +1040,16 @@ class MultiTreeBehavior extends ModelBehavior {
 					} else {
 						$node[$Model->alias][$parent] = null;
 					}
-					$Model->save($node, array('callbacks' => false, 'validate' => false, 'fieldList' => array($parent)));
+					if (!$Model->save($node, array('callbacks' => false, 'validate' => false, 'fieldList' => array($parent)))) {
+
+						// Print any errors
+						echo sprintf('Unable to move leaf ID %s under parent %s ', 
+							$node[$Model->alias][$Model->primaryKey],
+							$node[$Model->alias][$parent]
+						);
+						// Stop the Process
+						return false;
+					}
 				}
 				break;
 			
@@ -1056,12 +1065,34 @@ class MultiTreeBehavior extends ModelBehavior {
 						"$Model->alias.$Model->primaryKey" => 'asc',
 						)
 					));
-				foreach ( $nodes as $node ) {
+				$total = count($nodes);
+				foreach ( $nodes as $key => $node ) {
 					$node = reset($node);
-					$this->move($Model, $node[$Model->primaryKey], $node[$parent], 'lastChild');
+					$errors = array();
+
+					// Report
+					echo sprintf("(%s/%s) : Moving leaf ID %s under parent leaf ID %s \n", 
+						$key,
+						$total,
+						$node[$Model->primaryKey],
+						$node[$parent]
+					);
+					if (!$this->move($Model, $node[$Model->primaryKey], $node[$parent], 'lastChild')) {
+
+						// Private any errors
+						echo sprintf('Unable to move leaf ID %s under parent %s ', 
+							$node[$Model->primaryKey],
+							$node[$parent]
+						);
+						//Stop the Process
+						return false;
+					}
 				}
 				break;
 		}
+
+		// Everything is good 
+		return true;
 	}
 	
 	/**
